@@ -17,5 +17,6 @@ public class Post {
 		 */
 		String data = String.format("번호:%d 내용:%s 작성자:%s ", this.id, this.content, this.author);
 		System.out.println(data);
+		//여기서 this는 생략가능(같은 객체 안에 있는 필드를 지정할 때)
 	}
 }
