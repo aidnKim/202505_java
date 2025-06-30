@@ -1,0 +1,44 @@
+package test.main;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import test.mypac.MemberDto;
+
+public class MainClass05 {
+	public static void main(String[] args) {
+		// MemberDto 객체를 저장할 수 있는 ArrayList 객체 생성
+		List<MemberDto> list=new ArrayList<>();
+		//1번 회원의 정보
+		MemberDto dto = new MemberDto();
+		dto.setNum(1);
+		dto.setName("김구라");
+		dto.setAddr("노량진");
+		
+		//2번 회원의 정보
+		MemberDto dto2 = new MemberDto(2, "해골", "행신동");
+		//3번 회원의 정보
+		MemberDto dto3 = new MemberDto(3, "원숭이", "동물원");
+		
+		//생성한 회원의 정보를 ArrayList 객체에 누적시키기
+		list.add(dto);
+		list.add(dto2);
+		list.add(dto3);
+		
+		//확장 for문
+		for(MemberDto tmp:list) {
+			String info = String.format("번호:%d, 이름:%s, 주소:%s", tmp.getNum(), tmp.getName(), tmp.getAddr());
+			//출력하기
+			System.out.println(info);
+		}
+		System.out.println("forEach() 를 이용하면 ----------->");
+			
+		list.forEach(item ->{ //함수에 전달되는 item은 MemberDto type 이다
+			String info = String.format("번호:%d, 이름:%s, 주소:%s", item.getNum(), item.getName(), item.getAddr());
+			//출력하기
+			System.out.println(info);
+		});
+		
+		
+	}
+}
