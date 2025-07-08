@@ -42,7 +42,61 @@ public class MemberFrame_my extends JFrame{
 		//JButton
 		JButton insertBtn=new JButton("저장");
 		JButton deleteBtn=new JButton("삭제");
-		JButton updateBtn=new JButton("수정");
+		var updateBtn=new JButton("수정");
+		
+		updateBtn.addActionListener((e)->{
+			//선택된 row 의 index 값을 읽어온다
+			int selectedRow=table.getSelectedRow();
+			//만일 선택된 row 가 없다면
+			if(selectedRow==-1) {
+				JOptionPane.showMessageDialog(this, "수정할 row 를 선택해주세요!");
+				return; //메소드(함수)를 여기서 끝내기(리턴하기)
+			}
+			//선택된 row 에서 수정할 회원의 번호를 얻어낸다
+			int num=(int)model.getValueAt(selectedRow, 0);
+			//수정할 회원의 전체 정보를 DB 에서 읽어온다
+			MemberDto dto=dao.getByNum(num);
+			//수정양식 UI 를 JPanel 로 구성한다
+			var inputName=new JTextField(10);
+			var inputAddr=new JTextField(10);
+			JPanel editPanel=new JPanel();
+			editPanel.add(new JLabel("이름:"));
+			editPanel.add(inputName);
+			editPanel.add(new JLabel("주소:"));
+			editPanel.add(inputAddr);
+			//MemberDto 에 있는 정보를 JTextField 에 출력
+			inputName.setText(dto.getName());
+			inputAddr.setText(dto.getAddr());
+			
+			//JPanel 을 전달하면서 ConfirmDialog 를 띄운다
+			int result = JOptionPane.showConfirmDialog(
+					this, 
+					editPanel, 
+					num+" 번 회원 수정", 
+					JOptionPane.OK_CANCEL_OPTION
+			);
+			//리턴되는 숫자값을 테스트로 콘솔 창에 출력하기
+			System.out.println(result);
+			//만일 확인 버튼을 누르면...
+			if(result == JOptionPane.OK_OPTION) {
+				//입력한 이름과 주소를 읽어와서
+				String name=inputName.getText();
+				String addr=inputAddr.getText();
+				//수정 반영한다
+				MemberDto newDto=new MemberDto();
+				newDto.setNum(num);
+				newDto.setName(name);
+				newDto.setAddr(addr);
+				boolean isSuccess=dao.update(newDto);
+				if(isSuccess) {
+					JOptionPane.showMessageDialog(this, "수정 성공!");
+					printMember();
+				}else {
+					JOptionPane.showMessageDialog(this, "수정 실패!");					
+				}
+			}
+			
+		});
 		
 		//버튼의 동작
 		insertBtn.addActionListener((e)->{
@@ -78,23 +132,6 @@ public class MemberFrame_my extends JFrame{
 			//DB 에서 삭제한다
 			dao.deleteByNum(num);			
 			//DB 에서 회원정보를 다시 읽어와서 출력한다
-			printMember();
-		});
-		
-		updateBtn.addActionListener((e)->{
-			int selectedRow=table.getSelectedRow();
-			if(selectedRow==-1) {
-				JOptionPane.showMessageDialog(this, "삭제할 row 를 선택해주세요!");
-				return;
-			}
-			int num = (int) model.getValueAt(selectedRow, 0);
-			var name=inputName.getText();
-			var addr=inputAddr.getText();
-			var dto=new MemberDto();
-			dto.setName(name);
-			dto.setAddr(addr);
-			dto.setNum(num);
-			dao.update(dto);
 			printMember();
 		});
 		
